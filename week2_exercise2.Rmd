@@ -1,0 +1,14 @@
+---
+title: "week2_exercise"
+output: html_document
+date: '2022-04-29'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+```
+
