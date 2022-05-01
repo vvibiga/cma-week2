@@ -23,3 +23,44 @@ wildschwein_BE <- read_delim("wildschwein_BE_2056.csv",",")
 wildschwein_BE <- st_as_sf(wildschwein_BE, coords = c("E", "N"), crs = 2056, remove = FALSE)
 ```
 
+Task 2: Getting an overview
+```{r}
+wildschwein_BE <- group_by(wildschwein_BE, TierID)
+wildschwein_BE <- mutate(wildschwein_BE,timelag = as.integer(difftime(lead(DatetimeUTC),DatetimeUTC, units = "secs")))
+
+wildschwein_BE
+```
+
+
+```{r}
+ggplot(data = wildschwein_BE) +
+  stat_summary(
+    mapping = aes(x = DatetimeUTC, y = TierID),
+    fun.min = min,
+    fun.max = max,
+    fun = median) +
+  ggtitle("How many individuals were tracked?")
+```
+Three individuals were tracked Sabi, Rosa and Ruth.The plot shows for how long they were tracked.
+
+```{r}
+ggplot(wildschwein_BE, aes(timelag)) +
+  geom_bar(stat = "count") +
+  xlim(0,1000) +
+  ylim(0,1000) 
+
+```
+All individuals were tracked more or less concurrently and sometimes sequentially.
+
+```{r}
+ggplot(wildschwein_BE, aes(x= wildschwein_BE$DatetimeUTC, y= wildschwein_BE$timelag)) +
+  geom_point(color=wildschwein_BE$TierID) + 
+  geom_segment( aes(x= DatetimeUTC, xend= DatetimeUTC, y=0, yend= timelag, color = wildschwein_BE$TierID),
+                color=wildschwein_BE$TierID) +
+  ylim(0,30000) +
+  labs(x="Date Time UTC", y="Timelag(sec)", color = "Tier ID")
+
+#I tried to add a Color Legend with the TierID here. Unfortunately, I don't really get it how I have to do it.
+
+```
+
