@@ -64,3 +64,67 @@ ggplot(wildschwein_BE, aes(x= wildschwein_BE$DatetimeUTC, y= wildschwein_BE$time
 
 ```
 
+Task 3:
+```{r}
+wildschwein_BE <- mutate(wildschwein_BE,steplength = as.integer(sqrt((E-lead(E))^2 + (N-lead(N))^2)))
+
+```
+
+```{r}
+wildschwein_BE <- mutate(wildschwein_BE, speed = (steplength/timelag))
+```
+
+Task 4:
+```{r}
+caro <- read_delim("caro60.csv",",") 
+caro <- st_as_sf(caro, coords = c("E", "N"), crs = 2056, remove = FALSE)
+```
+
+```{r}
+caro_3 = caro[seq(1, nrow(caro), 3), ]
+caro_6 = caro[seq(1, nrow(caro), 6), ]
+caro_9 = caro[seq(1, nrow(caro), 9), ]
+
+nrow(caro)
+nrow(caro_3)
+nrow(caro_6)
+nrow(caro_9)
+```
+
+Calculating timelag for all the datasets:
+```{r}
+caro <- group_by(caro, TierID)
+caro <- mutate(caro,timelag = as.integer(difftime(lead(DatetimeUTC), DatetimeUTC, units = "secs")))
+
+caro_3 <- group_by(caro_3, TierID)
+caro_3 <- mutate(caro_3,timelag = as.integer(difftime(lead(DatetimeUTC),DatetimeUTC, units = "secs")))
+
+caro_6 <- group_by(caro_6, TierID)
+caro_6 <- mutate(caro_6,timelag = as.integer(difftime(lead(DatetimeUTC),DatetimeUTC, units = "secs")))
+
+caro_9 <- group_by(caro_9, TierID)
+caro_9 <- mutate(caro_9,timelag = as.integer(difftime(lead(DatetimeUTC),DatetimeUTC, units = "secs")))
+```
+
+Calculating step length for all the data sets:
+```{r}
+caro <- mutate(caro,steplength = (sqrt((E-lead(E))^2 + (N-lead(N))^2)))
+
+caro_3 <- mutate(caro_3,steplength = (sqrt((E-lead(E))^2 + (N-lead(N))^2)))
+
+caro_6 <- mutate(caro_6,steplength = (sqrt((E-lead(E))^2 + (N-lead(N))^2)))
+
+caro_9 <- mutate(caro_9,steplength = (sqrt((E-lead(E))^2 + (N-lead(N))^2)))
+```
+
+Calculating speed for all data sets:
+```{r}
+caro <- mutate(caro, speed = (steplength/timelag))
+
+caro_3 <- mutate(caro_3, speed = (steplength/timelag))
+
+caro_6 <- mutate(caro_6, speed = (steplength/timelag))
+
+caro_9 <- mutate(caro_9, speed = (steplength/timelag))
+```
+
