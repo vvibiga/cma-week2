@@ -183,4 +183,44 @@ fourth_plot
 ```
 This plot shows how detailed the 1-minute trajectory is and how the 3-, 6- & 9-minute summarized the data differently. Again one can see that trajectory 3-minute includes the main details from 1-minute trajectory and the 6- and 9-minute trajectories show a smoother path.
 
+Task 5:
+
+```{r}
+install.packages("zoo")
+```
+
+```{r}
+library(zoo)
+
+example <- rnorm(10)
+rollmean(example, k=3, fill = NA, align = "left")
+rollmean(example, k=5, fill = NA, align = "right")
+rollmean(example, k=2, fill = NA, align = "left")
+```
+
+```{r}
+
+caro_rm5 <- rollmean(caro$speed, k=5, fill = NA, align = "right")
+caro_rm10 <-rollmean(caro$speed, k=10, fill = NA, align = "right")
+```
+
+
+```{r}
+fifth_plot <- ggplot(caro, aes(x = DatetimeUTC, y = speed)) +
+  geom_path(aes(y = rollmean(speed, 10, align = "right", fill = NA), colour = "K10")) +
+  geom_path(aes(y = rollmean(speed, 5, align = "right", fill = NA), colour = "K5")) +
+  geom_path(aes(y = rollmean(speed, 3, align = "right", fill = NA), colour = "K3")) +
+  geom_path(aes(y = rollmean(speed, 20, align = "right", fill = NA), colour = "K20")) +
+   guides(colour= guide_legend(title = "Window Sizes")) +
+  ggtitle("Moving window with different window sizes") +
+  xlab("Time") + ylab("Speed(m/s)")
+
+fifth_plot
+```
+
+
+
+
+
+
 
