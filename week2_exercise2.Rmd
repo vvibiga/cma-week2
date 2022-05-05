@@ -66,13 +66,15 @@ ggplot(wildschwein_BE, aes(x= wildschwein_BE$DatetimeUTC, y= wildschwein_BE$time
 
 Task 3:
 ```{r}
-wildschwein_BE <- mutate(wildschwein_BE,steplength = as.integer(sqrt((E-lead(E))^2 + (N-lead(N))^2)))
+wildschwein_BE <- mutate(wildschwein_BE,steplength = (sqrt((E-lead(E))^2 + (N-lead(N))^2)))
 
 ```
 
 ```{r}
-wildschwein_BE <- mutate(wildschwein_BE, speed = (steplength/timelag))
+wildschwein_BE <- mutate(wildschwein_BE, speed = ((steplength/timelag)))
+
 ```
+The speed unit is in m/s.
 
 Task 4:
 ```{r}
@@ -127,4 +129,58 @@ caro_6 <- mutate(caro_6, speed = (steplength/timelag))
 
 caro_9 <- mutate(caro_9, speed = (steplength/timelag))
 ```
+
+
+```{r}
+first_plot <- ggplot() +
+  geom_path(data = caro, aes(x = E, y = N, colour = "1-Minute")) +
+  geom_point(data = caro, aes(x=E, y=N, colour = "1-Minute")) +
+  geom_path(data = caro_3,aes(x = E, y = N, colour = "3-Minute")) +
+  geom_point(data = caro_3, aes(x=E, y=N, colour = "3-Minute")) +
+  guides(colour= guide_legend(title = "Trajectories")) +
+  ggtitle("Comparing original-with 3 minutes-resampled data")
+  
+first_plot
+```
+
+```{r}
+second_plot <- ggplot() +
+  geom_path(data = caro, aes(x = E, y = N, colour = "1-Minute")) +
+  geom_point(data = caro, aes(x=E, y=N, colour = "1-Minute")) +
+  geom_path(data = caro_6,aes(x = E, y = N, colour = "6-Minute")) +
+  geom_point(data = caro_6, aes(x=E, y=N, colour = "6-Minute")) +
+  guides(colour= guide_legend(title = "Trajectories")) +
+  ggtitle("Comparing original-with 6 minutes-resampled data")
+
+second_plot
+```
+
+```{r}
+third_plot <- ggplot() +
+  geom_path(data = caro, aes(x = E, y = N, colour = "1-Minute")) +
+  geom_point(data = caro, aes(x=E, y=N, colour = "1-Minute")) +
+  geom_path(data = caro_9,aes(x = E, y = N, colour = "9-Minute")) +
+  geom_point(data = caro_9, aes(x=E, y=N, colour = "9-Minute")) +
+  guides(colour= guide_legend(title = "Trajectories")) +
+  ggtitle("Comparing original-with 9 minutes-resampled data")
+
+third_plot
+```
+
+ Comparing the original data trajectories to the three resampled data shows how the trajectories vary depending on the measured data.The "3-Minute" and "6-Minute" trajectories are almost projecting the same path. But the "9-Minute" trajectory shows a different and a superficiel path. Compared to the "1-Minute" trajectory the "3-Minute" trajectory is most similar and the "9-Minute" trajectory misses many important measurements. To conclude is, as we have seen in the lectures, it is not easy to decide which scale/granularity is sufficient to capture the character of a movement path (Lecture slides_Data issues, 51).
+
+```{r}
+fourth_plot <- ggplot() +
+  geom_path(data = caro, aes(x = DatetimeUTC, y = speed, colour = "1-minute")) +
+  geom_path(data = caro_3, aes(x=DatetimeUTC, y= speed, colour = "3-Minute")) +
+  geom_path(data = caro_6,aes(x = DatetimeUTC, y = speed, colour = "6-Minute")) +
+  geom_path(data = caro_9, aes(x=DatetimeUTC, y= speed, colour = "9-Minute")) +
+  guides(colour= guide_legend(title = "Trajectories")) +
+  ggtitle("Comparing derived speed at different sampling intervals") +
+  xlab("Time") + ylab("Speed(m/s)")
+
+fourth_plot
+```
+This plot shows how detailed the 1-minute trajectory is and how the 3-, 6- & 9-minute summarized the data differently. Again one can see that trajectory 3-minute includes the main details from 1-minute trajectory and the 6- and 9-minute trajectories show a smoother path.
+
 
